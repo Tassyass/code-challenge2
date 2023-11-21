@@ -1,38 +1,86 @@
-import logo from './logo.svg';
-import './App.css';
-import { useState } from 'react';
-import Boltcollection from './components/Boltcollection';
-import YourboltArmy from './components/YourboltArmy';
+// import logo from './logo.svg';
+// import './App.css';
+// import { useState } from 'react';
+// import Boltcollection from './components/Boltcollection';
+// import YourboltArmy from './components/YourboltArmy';
 
 
 
-function App() {
+// function App() {
 
 
-  const [selectedBolts, setSelectedBolts] = useState([]);
+//   const [selectedBolts, setSelectedBolts] = useState([]);
 
-  const removeFromBoltArmy = (boltId) => {
-    const updatedBolts = selectedBolts.filter((bolt) => bolt.id !== boltId);
-    setSelectedBolts(updatedBolts);
-  };
+//   const removeFromBoltArmy = (boltId) => {
+//     const updatedBolts = selectedBolts.filter((bolt) => bolt.id !== boltId);
+//     setSelectedBolts(updatedBolts);
+//   };
   
 
-  const addToBoltArmy = (bolts) => {
-    setSelectedBolts([...selectedBolts, bolts]);
-  };
+//   const addToBoltArmy = (bolts) => {
+//     setSelectedBolts([...selectedBolts, bolts]);
+//   };
 
-  return (
-    <>
-      <YourboltArmy selectedBolts={selectedBolts}  removeFromBoltArmy={removeFromBoltArmy}/>
-      <Boltcollection addToBoltArmy={addToBoltArmy}/> 
+//   return (
+//     <>
+//       <YourboltArmy selectedBolts={selectedBolts}  removeFromBoltArmy={removeFromBoltArmy}/>
+//       <Boltcollection addToBoltArmy={addToBoltArmy}/> 
      
 
       
 
 
-    </>
+//     </>
   
+//   );
+// }
+
+// export default App;
+
+import React, { useState, useEffect } from "react";
+import BotCollection from "./components/Botcollection";
+import BotArmy from "./components/BotArmy";
+import "./App.css";
+
+function App() {
+  const [bots, setBots] = useState([]);
+  const [enlistedBots, setEnlistedBots] = useState([]); 
+
+  useEffect(() => {
+    // Fetch data from the API
+    fetch('http://localhost:3000/bots')
+    .then((resp) => resp.json())
+    .then((data) => setBots(data))
+    .catch((error) => console.error('Error fetching data:', error));
+}, []);
+
+const releaseFromArmy = (updatedEnlistedBots) => {
+  // Implement the logic to release bots from the army
+  setEnlistedBots(updatedEnlistedBots);
+};
+
+function handleBotDischarge(bot) {
+  // Remove the bot from enlistedBots in the frontend
+  const updatedEnlistedBots = enlistedBots.filter((enlistedBot) => enlistedBot.id !== bot.id);
+  setEnlistedBots(updatedEnlistedBots);
+}
+ 
+
+  return (
+    <div className="App">
+       <BotArmy 
+        enlistedBots={enlistedBots} 
+        releaseFromYourBotArmy={releaseFromArmy}/> 
+
+      <BotCollection
+       bots={bots} 
+       enlistedBots={enlistedBots} 
+       setEnlistedBots={setEnlistedBots}
+       handleBotDischarge={handleBotDischarge}
+      />
+      
+      
+    </div>
   );
 }
-
-export default App;
+export default App
